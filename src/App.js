@@ -1,5 +1,6 @@
 import React, { Suspense, lazy } from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
+import ErrorPage from './tabs/ErrorPage';
 
 import tabs from './tabs.json';
 
@@ -37,7 +38,12 @@ const App = () => {
 
     return (
         <>
-            <header>
+            <header
+                style={{
+                    display: 'flex',
+                    gap: '15px',
+                }}
+            >
                 <Link to="/">Home</Link>
                 {sortedTabs.map((item) => (
                     <Link key={item.id} to={item.id}>
@@ -50,6 +56,7 @@ const App = () => {
                 {sortedTabs.map((tab) => (
                     <Route key={tab.id} path={tab.id} element={getComponent(tab.id)}></Route>
                 ))}
+                <Route path="*" element={<ErrorPage />}></Route>
             </Routes>
         </>
     );
