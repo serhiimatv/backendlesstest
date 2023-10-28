@@ -3,16 +3,21 @@ import { Routes, Route, Link } from 'react-router-dom';
 
 import tabs from './tabs.json';
 
-const Components = {
-    dummyChart: lazy(() => import('./tabs/DummyChart')),
-    dummyList: lazy(() => import('./tabs/DummyList')),
-    dummyTable: lazy(() => import('./tabs/DummyTable')),
+const createComponentsMap = () => {
+    const components = {};
+    tabs.forEach((item) => {
+        components[item.id] = lazy(() => import(`./${item.path}`));
+    });
+
+    return components;
 };
+
+const Components = createComponentsMap();
 
 const App = () => {
     const sortedTabs = tabs.sort((item1, item2) => item1.order - item2.order);
 
-    const fn = (string) => {
+    const getComponent = (string) => {
         const entries = Object.entries(Components);
 
         const array = entries.find((item) => {
@@ -41,9 +46,9 @@ const App = () => {
                 ))}
             </header>
             <Routes>
-                <Route index element={fn(sortedTabs[0].id)}></Route>
+                <Route index element={getComponent(sortedTabs[0].id)}></Route>
                 {sortedTabs.map((tab) => (
-                    <Route key={tab.id} path={tab.id} element={fn(tab.id)}></Route>
+                    <Route key={tab.id} path={tab.id} element={getComponent(tab.id)}></Route>
                 ))}
             </Routes>
         </>
